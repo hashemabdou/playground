@@ -11,3 +11,4 @@ instance/
 .venv
 *.pem
 private/
+archive/
