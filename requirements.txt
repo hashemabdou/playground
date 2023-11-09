@@ -50,6 +50,7 @@ googleapis-common-protos==1.60.0
 grpcio==1.59.2
 grpcio-status==1.59.2
 gTTS==2.3.1
+gunicorn==21.2.0
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0

@@ -142,7 +142,7 @@ def summarize_text(text):
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant. Please summarize this text and keep it brief, but first, indicate what kind of text this is (e.g. article, essay, lab report, song)."
+                    "content": "You are a helpful assistant. Please summarize this text and keep it brief, but first, indicate what kind of text this is (e.g. article, essay, lab report, song). Make sure to give key takeaways."
                 },
                 {
                     "role": "user",
