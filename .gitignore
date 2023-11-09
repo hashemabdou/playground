@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+myappenv/
+.DS_Store
+instance/
+.env
+.venv
+*.pem
+private/

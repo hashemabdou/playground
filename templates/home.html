@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>The Playground</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f2f6fc;
+            color: #333;
+            margin: 0;
+            padding-top: 60px; /* Adjusted to avoid overlay with the fixed navbar */
+        }
+        .navbar {
+            background-color: #4CAF50; /* Updated to use the same green */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 14px 0;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f6fc;
+            text-align: center;
+            padding: 0 20px;
+            text-decoration: none;
+        }
+        .navbar a:not(.coming-soon):hover {
+            background-color: #367c39; /* Darker green for hover effect */
+            color: white;
+        }
+        .coming-soon {
+            cursor: default;
+            opacity: 0.6; /* Dim the link to show it's not active */
+        }
+        .main-content {
+            max-width: 600px;
+            margin: 120px auto 50px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        p {
+            color: #555;
+        }
+        .feature:not(.coming-soon-feature) {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .feature:hover {
+            background-color: #f0fff0;
+        }
+        .coming-soon-feature {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #777;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/summarizer">Summarizer</a>
+        <span class="coming-soon">LinkedIn Scraper (Coming Soon)</span>
+    </div>
+    <div class="main-content">
+        <h1>welcome to my playground...</h1>
+        <p>Just me experimenting.</p>
+        <div class="feature" onclick="location.href='/summarizer';">
+            <h2>Summarizer</h2>
+            <p>Upload documents and get concise summaries instantly.</p>
+        </div>
+        <div class="coming-soon-feature">
+            <h2>LinkedIn Scraper</h2>
+            <p>Manage your professional network with ease. <strong>Coming Soon!</strong></p>
+        </div>
+        <div class="footer">
+            <p>Designed for creative exploration. By hashemking.</p>
+            <p>Support further development:</p>
+            <p>Venmo: @hashemabdou</p>
+            <a href="https://www.linkedin.com/in/hashemabdou" target="_blank">LinkedIn</a>
+        </div>
+    </div>
+</body>
+</html>

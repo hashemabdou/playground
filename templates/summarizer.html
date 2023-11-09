@@ -1,0 +1,163 @@
+<!-- text_summarizer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>TextSummarizer - Upload</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f2f6fc;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        .subheader {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .file-drop-area {
+            border: 2px dashed #4CAF50;
+            border-radius: 4px;
+            padding: 30px;
+            cursor: pointer;
+        }
+        .file-drop-area.highlight, .file-drop-area:hover {
+            background-color: #f0fff0;
+            border-color: #4CAF50; /* This will change the border color to green when highlighted */
+        }
+        .file-drop-area input[type='file'] {
+            display: none;
+        }
+        .navbar {
+            background-color: #4CAF50; /* Updated to use the same green */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 14px 0;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f6fc;
+            text-align: center;
+            padding: 0 20px;
+            text-decoration: none;
+        }
+        .navbar a:not(.coming-soon):hover {
+            background-color: #367c39; /* Darker green for hover effect */
+            color: white;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 40px 2px 4px; /* Increased top margin to lower the button */
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .donation {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/summarizer">Summarizer</a>
+        <span class="coming-soon">LinkedIn Scraper (Coming Soon)</span>
+    </div>
+    </div>
+    <div class="container">
+        <h1>Summarizer</h1>
+        <p class="subheader">You can upload either PDFs or images. Word docs coming soon...</p>
+        <form action="/upload-file" method="post" enctype="multipart/form-data">
+            <div class="file-drop-area" onclick="document.getElementById('file-input').click();">
+                <span class="fake-btn">Choose file</span>
+                <span class="file-msg">or drag and drop files here</span>
+                <input class="file-input" type="file" id="file-input" name="file">
+            </div>
+            <button type="submit" class="btn">Upload & Extract Text</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        var $fileInput = $('.file-input');
+        var $droparea = $('.file-drop-area');
+
+        // highlight drag area
+        $fileInput.on('dragenter focus click', function() {
+            $droparea.addClass('highlight');
+        });
+
+        // back to normal state
+        $fileInput.on('dragleave blur drop', function() {
+            $droparea.removeClass('highlight');
+        });
+
+        // change inner text
+        $fileInput.on('change', function() {
+            var filesCount = $(this)[0].files.length;
+            var $textContainer = $(this).prev('.file-msg');
+
+            if (filesCount === 1) {
+                // if single file is selected, show file name
+                var fileName = $(this).val().split('\\').pop();
+                $textContainer.text(fileName);
+            } else {
+                // if multiple files are selected, show number of files
+                $textContainer.text(filesCount + ' files selected');
+            }
+        });
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            $droparea.on(eventName, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if(eventName === 'dragenter' || eventName === 'dragover'){
+                    $droparea.addClass('highlight');
+                } else {
+                    $droparea.removeClass('highlight');
+                }
+            });
+        });
+
+        // Handle dropped files
+        $droparea.on('drop', function(e) {
+            var dataTransfer = e.originalEvent.dataTransfer;
+            if (dataTransfer && dataTransfer.files.length) {
+                $fileInput.prop('files', dataTransfer.files);
+                // Update text on drop
+                var fileName = dataTransfer.files[0].name;
+                $droparea.find('.file-msg').text(fileName);
+            }
+        });
+    </script>
+</body>
+</div>
+</html>
