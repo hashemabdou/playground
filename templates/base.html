@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f2f6fc;
+            color: #333;
+            margin: 0;
+            padding-top: 60px; /* Adjust for fixed navbar */
+        }
+        .navbar {
+            background-color: #4CAF50;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 14px 0;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f6fc;
+            text-align: center;
+            padding: 0 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #367c39;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .navbar a:not(.coming-soon):hover {
+            background-color: #367c39; /* Darker green for hover effect */
+            color: white;
+        }
+        .coming-soon {
+            cursor: default;
+            opacity: 0.6; /* Dim the link to show it's not active */
+        }
+        .main-content {
+            max-width: 600px;
+            margin: 120px auto 50px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        p {
+            color: #555;
+        }
+        .feature:not(.coming-soon-feature) {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .feature:hover {
+            background-color: #f0fff0;
+        }
+        .coming-soon-feature {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #777;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .subheader {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .file-drop-area {
+            border: 2px dashed #4CAF50;
+            border-radius: 4px;
+            padding: 30px;
+            cursor: pointer;
+        }
+        .file-drop-area.highlight, .file-drop-area:hover {
+            background-color: #f0fff0;
+            border-color: #4CAF50; /* This will change the border color to green when highlighted */
+        }
+        .file-drop-area input[type='file'] {
+            display: none;
+        }
+        
+        .donation {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button, .button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+        .subtle-button {
+            background-color: #f2f6fc; /* Same as body background for subtlety */
+            color: #333; /* Same as body text color */
+            margin: 0; /* Remove margin */
+            padding: 5px 10px; /* Less padding */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        #summary {
+            text-align: left; /* Left align the summary */
+            white-space: pre-wrap; /* Since 'pre' tag is not used, 'pre-wrap' helps to preserve whitespaces and line breaks */
+        }
+    </style>
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/summarizer">Summarizer</a>
+        <a href="/voice-analyzer">Voice Analyzer</a>
+        <span class="coming-soon">LinkedIn Scraper (Coming Soon)</span>
+    </div>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

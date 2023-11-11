@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+
+{% block title %}Voice Analysis Result{% endblock %}
+
+{% block content %}
+    <a href="/voice-analyzer" class="subtle-button">Analyze New Voice Recording</a>
+
+    <h2>Transcribed Text:</h2>
+    <textarea rows="10" cols="50" readonly style="width:100%">{{ transcribed_text }}</textarea>
+    <br>
+
+    {% if mood_analysis %}
+    <h2>Mood Analysis:</h2>
+    <div id="mood-analysis">
+        {{ mood_analysis }}
+    </div>
+    {% endif %}
+
+    <a href="/voice-analyzer" class="button">Analyze Another Recording</a>
+{% endblock %}
+</html>

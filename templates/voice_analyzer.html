@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+
+{% block title %}Voice Analyzer - Upload or Record{% endblock %}
+
+{% block content %}
+    <h1>Voice Analyzer</h1>
+    <p class="subheader">Upload your voice recording for analysis or record live. Supported formats: MP3, WAV.</p>
+
+    <!-- File Upload Section -->
+    <form id="voice-upload-form" action="/analyze-voice" method="post" enctype="multipart/form-data">
+        <div class="file-drop-area" onclick="document.getElementById('file-input').click();">
+            <span class="fake-btn">Choose file</span>
+            <span class="file-msg">or drag and drop files here</span>
+            <input class="file-input" type="file" id="file-input" name="voice_file" accept="audio/*">
+        </div>
+
+        <!-- Separator -->
+        <div style="margin: 20px 0; font-size: 24px; font-weight: bold;">OR</div>
+
+        <!-- Voice Recording Section -->
+        <div>
+            <button type="button" id="start-record-btn" onclick="startRecording()">Start Recording</button>
+            <button type="button" id="stop-record-btn" onclick="stopRecording()" disabled>Stop Recording</button>
+            <span id="recording-time">00:00</span>
+            <audio id="audio-playback" controls></audio>
+        </div>
+
+        <button type="submit" class="btn">Upload & Analyze</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordingInterval;
+
+    // Start recording audio
+    function startRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => {
+                    audioChunks.push(e.data);
+                };
+
+                mediaRecorder.start();
+                startTimer();
+
+                document.getElementById('stop-record-btn').disabled = false;
+                document.getElementById('start-record-btn').disabled = true;
+            })
+            .catch(e => {
+                console.error('Error accessing media devices:', e);
+            });
+    }
+
+    // Stop recording audio
+    function stopRecording() {
+        mediaRecorder.stop();
+        clearInterval(recordingInterval);
+
+        document.getElementById('stop-record-btn').disabled = true;
+        document.getElementById('start-record-btn').disabled = false;
+        resetTimer();
+    }
+
+    // Timer for recording duration
+    function startTimer() {
+        let elapsedSeconds = 0;
+        recordingInterval = setInterval(() => {
+            elapsedSeconds++;
+            const minutes = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+            const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('recording-time').textContent = `${minutes}:${seconds}`;
+        }, 1000);
+    }
+
+    function resetTimer() {
+        clearInterval(recordingInterval);
+        document.getElementById('recording-time').textContent = "00:00";
+    }
+
+    // Prepare audio Blob and add it to the form when submitting
+    document.getElementById('voice-upload-form').addEventListener('submit', function(event) {
+        if (audioChunks.length > 0) {
+            event.preventDefault();
+
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const formData = new FormData(this);
+            formData.append('voice_file', audioBlob, 'recording.wav');
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Handle the response from the server
+                // You might want to redirect to another page or display the analysis result
+            })
+            .catch(error => {
+                console.error('Error uploading recorded audio:', error);
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+</html>

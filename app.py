@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
-from google.cloud import vision, storage, vision_v1
+from google.cloud import vision, storage, vision_v1, speech
 from google.cloud.vision_v1 import types
+#from google.cloud.speech import enums, types
 from decouple import config
 import openai
 import os
@@ -9,7 +10,6 @@ import logging
 import json
 from config import DevelopmentConfig, ProductionConfig, TestingConfig
 from dotenv import load_dotenv
-
 
 app = Flask(__name__)
 
@@ -33,6 +33,8 @@ openai.api_key = OPENAI_API_KEY
 # Set up the Vision API client
 SERVICE_ACCOUNT_PATH = config('GOOGLE_APPLICATION_CREDENTIALS')
 vision_client = vision.ImageAnnotatorClient.from_service_account_json(SERVICE_ACCOUNT_PATH)
+speech_client = speech.SpeechClient.from_service_account_json(SERVICE_ACCOUNT_PATH)
+
 
 # Setup Google Cloud Storage client
 storage_client = storage.Client.from_service_account_json(SERVICE_ACCOUNT_PATH)
@@ -185,6 +187,42 @@ def upload_to_gcs(uploaded_file):
     blob.upload_from_file(uploaded_file, content_type=uploaded_file.content_type)
     return f"gs://{bucket_name}/{uploaded_file.filename}"
 
+def transcribe_voice(voice_file):
+    """
+    Transcribe the given voice file using Google Cloud Speech-to-Text.
+    """
+def transcribe_voice(voice_file):
+    audio_content = voice_file.read()
+    audio = speech.RecognitionAudio(content=audio_content)
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="en-US"
+    )
+
+    response = speech_client.recognize(config=config, audio=audio)
+    transcript = ""
+
+    for result in response.results:
+        transcript += result.alternatives[0].transcript
+
+    return transcript
+
+def analyze_mood(text):
+    """
+    Analyze the mood of the given text using OpenAI's GPT-3.5 API.
+    """
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=f"Analyze the mood of the following statement: \"{text}\"",
+            max_tokens=150
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        logging.error(f"Error in OpenAI API call: {e}")
+        return "Error in mood analysis."
+
 @app.route('/')
 def index():
     return render_template('home.html')
@@ -217,6 +255,40 @@ def summarize():
 
     # Pass the truncate_message to the template as well
     return render_template('output.html', extracted_text=text, summary=summarized, truncate_message=truncate_message)
+
+@app.route('/voice-analyzer')
+def voice_analyzer():
+    return render_template('voice_analyzer.html')
+
+@app.route('/analyze-voice', methods=['POST'])
+def analyze_voice():
+    if 'voice_file' in request.files:
+        # Handling uploaded file
+        voice_file = request.files['voice_file']
+        transcribed_text = transcribe_voice(voice_file)
+    else:
+        # Handling recorded audio (assuming it's sent as a base64 encoded string)
+        audio_data = request.form.get('audio_data')
+        if audio_data:
+            # Convert base64 to audio file
+            voice_file = convert_base64_to_audio(audio_data)
+            transcribed_text = transcribe_voice(voice_file)
+        else:
+            return "No audio data received", 400
+
+    mood_analysis = analyze_mood(transcribed_text)
+
+    return render_template('voice_analysis_result.html', transcribed_text=transcribed_text, mood_analysis=mood_analysis)
+
+def convert_base64_to_audio(base64_string):
+    import base64
+    from io import BytesIO
+
+    # Decode base64 string to bytes
+    audio_bytes = base64.b64decode(base64_string)
+    audio_file = BytesIO(audio_bytes)
+    audio_file.name = "recorded_voice.wav"  # You may need to adjust the file format
+    return audio_file
 
 @app.errorhandler(500)
 def internal_server_error(e):
