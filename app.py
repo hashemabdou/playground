@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from google.cloud import vision, storage, vision_v1
-from google.cloud.vision_v1 import types, ImageAnnotatorClient
+from google.cloud.vision_v1 import types
 from decouple import config
 import openai
 import os
 import requests
 import logging
 import json
-from google.cloud.vision_v1 import types
 from config import DevelopmentConfig, ProductionConfig, TestingConfig
 from dotenv import load_dotenv
 
